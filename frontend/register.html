@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./src/output.css" rel="stylesheet">
+</head>
+<body class="container mx-auto min-h-screen flex items-center justify-center py-10 bg-gradient-to-r from-red-300 to-red-400">
+  <div id="container" class="shadow-2xl flex flex-col md:flex-row items-center justify-center bg-red-200  rounded-xl overflow-hidden p-20 ">
+    
+    <!-- Image div -->
+    <div class="w-full md:w-1/2 p-4">
+      <img src="images/Screenshot 2025-04-07 033135.png" alt="login_doodle" class="max-w-full h-auto">
+    </div>
+    
+    <!-- Form div -->
+    <div class="w-full md:w-1/2">
+      <form id="Register" class="bg-white flex flex-col gap-6 p-8 md:p-12">
+        <div class="flex justify-center w-full mb-4">
+          <h1 class="text-3xl font-bold">Sign Up</h1>
+        </div>
+        
+        <div class="w-full flex items-center">
+          <label class="w-24 mr-2 font-light text-right">Username:</label>
+          <input type="text" placeholder="enter your username" class="flex-1 p-2 border rounded">
+        </div>
+        
+        <div class="w-full flex items-center">
+          <label class="w-24 mr-2 font-light text-right">Email:</label>
+          <input type="email" placeholder="enter your email" class="flex-1 p-2 border rounded">
+        </div>
+        
+        <div class="w-full flex items-center">
+          <label class="w-24 mr-2 font-light text-right">Password:</label>
+          <input type="password" placeholder="enter your password" class="flex-1 p-2 border rounded">
+        </div>
+        
+        <div class="flex justify-center mt-4">
+          <button id="btn" type="submit" class="bg-red-400 text-white py-2 px-6 rounded cursor-pointer hover:bg-red-300 focus:outline-none focus:ring-2 focus:ring-blue-300">Register</button>
+        </div>
+        <div class="flex justify-center gap-2  ">
+          <p class="font-light">Already have an account?</p>
+          <a href="login.html" class="text-blue-500">Sign In</a>
+      </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    document.getElementById("btn").addEventListener("click", function(event){
+      event.preventDefault();
+      const email = document.getElementById("email").value;
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      fetch('http://127.0.0.1:8000/users/api/register',{
+        method : "POST",
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: {
+          'email': email,
+          'username': username,
+          'password': password,
+        }
+      })
+      .then(Response=>{
+        if(Response.status == 400){
+          throw new Error("Incomplete arguments");
+          
+        }
+        return Response.json();
+
+      })
+      .then(data=>{
+        console.log(data.access);
+        localStorage.setItem("access token:",data.access);
+        localStorage.setItem("refresh token:",data.refresh);
+        window.location.href('home.html');
+      })
+      .catch(error =>{
+            
+            document.getElementById("error").innerHTML = `<p class="text-red-500 text-sm font-semibold">Invalid credentials</p>`;
+        });
+    });
+  </script>
+</body>
+</html>
